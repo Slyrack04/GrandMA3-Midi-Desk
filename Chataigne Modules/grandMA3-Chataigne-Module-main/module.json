@@ -1,0 +1,452 @@
+{
+  "name":"grandMA3",
+  "type":"OSC",
+  "path":"Software",
+  
+  "version":"1.3.0",
+  "description":"A Chataigne module to control grandMA3 via OSC. Attention breaking changes in version 1.0.0 - An update will break existing mappings. If time critical consider staying on version 0.8.5 for now",
+  "url":"https://github.com/yastefan/grandMA3-Chataigne-Module",
+  "downloadURL":"https://github.com/yastefan/grandMA3-Chataigne-Module/archive/refs/heads/main.zip",
+
+  "hasInput":true,
+  "hasOutput":true, 
+
+  "hideDefaultCommands":true,
+  
+  "defaults":
+  {	
+    "autoAdd":false,
+    "OSC Outputs": 
+    {
+      "OSC Output": { 
+        "local": true,
+        "remoteHost": "192.168.14.152",
+        "remotePort": 8000
+      }
+    },
+    "OSC Input": {
+      "enabled": false,
+      "localPort": 8001
+    }
+  },
+
+  "parameters":
+  {
+    "Fader range":
+    {
+      "type":"Float",
+      "default": 100
+    },
+    "Learn from oscInput":
+    {
+      "type": "Boolean",
+      "default": false
+    }
+  },
+
+  "hideDefaultParameters": ["autoAdd", "colorSendMode", "useHierarchy", "autoFeedback"],
+  "scripts": ["grandMA3.js"],
+
+  "values":
+  {
+    "Control": {
+      "type": "Container",
+      "collapsed": true,
+      "Preview": {"type": "Boolean"},
+      "Blind": {"type": "Boolean"},
+      "Freeze": {"type": "Boolean"}
+    },
+    "Startshow": {
+      "type": "Container",
+      "collapsed": true,
+      "Dimmer": {
+        "type": "Container",
+        "DimmerFX1": {"type": "Boolean"},
+        "DimmerFX2": {"type": "Boolean"},
+        "DimmerFX3": {"type": "Boolean"},
+        "DimmerFX4": {"type": "Boolean"},
+        "DimmerFX5": {"type": "Boolean"},
+        "DimmerFX6": {"type": "Boolean"},
+        "DimmerFX7": {"type": "Boolean"},
+        "DimmerFX8": {"type": "Boolean"}
+      },
+      "Position": {
+        "type": "Container",
+        "PositionFX1": {"type": "Boolean"},
+        "PositionFX2": {"type": "Boolean"},
+        "PositionFX3": {"type": "Boolean"},
+        "PositionFX4": {"type": "Boolean"},
+        "PositionFX5": {"type": "Boolean"},
+        "PositionFX6": {"type": "Boolean"},
+        "PositionFX7": {"type": "Boolean"},
+        "PositionFX8": {"type": "Boolean"}
+      },
+      "Color": {
+        "type": "Container",
+        "ColorFX1": {"type": "Boolean"},
+        "ColorFX2": {"type": "Boolean"},
+        "ColorFX3": {"type": "Boolean"},
+        "ColorFX4": {"type": "Boolean"},
+        "ColorFX5": {"type": "Boolean"},
+        "ColorFX6": {"type": "Boolean"},
+        "ColorFX7": {"type": "Boolean"},
+        "ColorFX8": {"type": "Boolean"}
+      }
+    }
+  },
+
+  "commands":
+  {
+   
+   "Move Executor Fader":
+    {
+      "menu":"Executor",  
+      "callback":"moveExecutorFader",
+      "parameters":
+      {
+        "Page": {"type":"Integer","min":0,"max":9,"default":1,"description": "By entering page number 0 the current page will be used."},
+        "Executor": {"type": "Integer", "min":1, "max":490, "default":201},
+        "Offset": {"type": "Integer", "min":0, "max":490, "default":0, "description":"e.g. offset 200 and executor 2 results in 202"}, 
+        "Value": {"type": "Float", "ui":"slider", "min":0, "max":1, "default":0, "mappingIndex": 0}
+      }
+    },
+    "Push Executor Button":
+    {
+      "menu":"Executor",  
+      "callback":"pushExecutorButton",
+      "parameters":
+      {
+        "Page": {"type":"Integer","min":0,"max":9,"default":1,"description": "By entering page number 0 the current page will be used."},
+        "Executor": {"type": "Integer", "min":1, "max":490, "default":101},
+        "Offset": {"type": "Integer", "min":0, "max":490, "default":0, "description":"e.g. offset 200 and executor 2 results in 202"},
+        "Value": {"type": "Boolean", "default":0, "mappingIndex": 0}
+      }
+    },
+    "Turn Executor Encoder":
+    {
+      "menu":"Executor",  
+      "callback":"turnExecutorEncoder",
+      "parameters":
+      {
+        "Page": {"type":"Integer","min":0,"max":9,"default":1,"description": "By entering page number 0 the current page will be used."},
+        "Executor": {"type": "Integer", "min":291, "max":490, "default":301},
+        "Offset": {"type": "Integer", "min":0, "max":490, "default":0, "description":"e.g. offset 200 and executor 2 results in 202"},
+        "Multiplicator": {"type": "Float", "min":-10, "max":10, "default":1, "description":"Speed of the encoder movement, only relevant for endless encoders"}
+      }
+    },
+    "Change Executor Speedscale":
+    {
+      "menu":"Executor",  
+      "callback":"changeExecutorSpeedscale",
+      "parameters":
+      {
+        "Page": {"type":"Integer","min":0,"max":9,"default":1,"description": "By entering page number 0 the current page will be used."},
+        "Executor": {"type": "Integer", "min":1, "max":490, "default":201},
+        "Offset": {"type": "Integer", "min":0, "max":490, "default":0, "description":"e.g. offset 200 and executor 2 results in 202"},
+        "Speedscale": 
+        {
+          "type":"Enum", "options": 
+          {
+            "Div8": "Div8",
+            "Div4": "Div4",
+            "Div2": "Div2",
+            "One": "One",
+            "Mul2": "Mul2",
+            "Mul4": "Mul4",
+            "Mul8": "Mul8"
+          }
+        }
+      }
+    },
+    "Add Executor to SyncList":
+    {
+      "menu":"Executor",  
+      "callback":"addExecutorToSyncList",
+      "parameters":
+      {
+        "Page": {"type":"Integer","min":0,"max":9,"default":1,"description": "By entering page number 0 the current page will be used."},
+        "Executor": {"type": "Integer", "min":1, "max":490, "default":201},
+        "Offset": {"type": "Integer", "min":0, "max":490, "default":0, "description": "e.g. offset 200 and executor 2 results in 202"},
+        "SyncList": {"type": "Integer", "min":1, "max":4, "default":1, "description": "by different synclists you can realize a synchronisiation on different beats"}
+      }
+    },
+    "Sync Executors":
+    {
+      "menu":"Executor",  
+      "callback":"syncExecutors",
+      "parameters":
+      {
+        "SyncList": {"type": "Integer", "min":1, "max":4, "default":1, "mappingIndex": 0, "description": "by different synclists you can realize a synchronisiation on different beats"}
+      }
+    },
+
+    "Move Sequence Fader":
+    {
+      "menu":"Sequence",  
+      "callback":"moveSequenceFader",
+      "parameters":
+      {
+        "SequenceNumber": {"type":"Integer","min":1,"max":9999,"default":1},
+        "Offset": {"type": "Integer", "min":0, "max":9999, "default":0, "description":"e.g. offset 10 and sequence 2 results in 12"},
+        "Fader": 
+        {
+          "type":"Enum", "options": 
+          {
+            "Master": "FaderMaster", 
+            "Speed": "FaderSpeed", 
+            "X": "FaderX",
+            "XA": "FaderXA",
+            "XB": "FaderXB",
+            "Temp": "FaderTemp",
+            "Rate": "FaderRate",
+            "Time": "FaderTime"
+          }
+        },
+        "Value": {"type": "Float", "ui":"slider", "min":0, "max":1, "default":0, "mappingIndex": 0}
+      }
+    },
+    "Push Sequence Button":
+    {
+      "menu":"Sequence",  
+      "callback":"pushSequenceButton",
+      "parameters":
+      {
+        "SequenceNumber": {"type":"Integer","min":1,"max":9999,"default":1},
+        "Offset": {"type": "Integer", "min":0, "max":9999, "default":0, "description":"e.g. offset 10 and sequence 2 results in 12"},
+        "Button": 
+        {
+          "type":"Enum", "options": 
+          {
+            ">>>": ">>>",
+            "<<<": "<<<",
+            "Black": "Black",
+            "Flash": "Flash",
+            "Go+": "Go+",
+            "Go-": "Go-",
+            "Goto": "Goto",
+            "LearnSpeed": "LearnSpeed",
+            "Load": "Load",
+            "On": "On",
+            "Off": "Off",
+            "Pause": "Pause",
+            "Rate1": "Rate1",
+            "Select": "Select",
+            "SelFix": "SelFix",
+            "Speed1": "Speed1",
+            "Swop": "Swop",
+            "Time": "Time",
+            "Temp": "Temp",
+            "Toggle": "Toggle",
+            "Top": "Top"
+          }
+        },
+        "Value": {"type": "Boolean", "default":0, "mappingIndex": 0}
+      }
+    },
+    "Move Master Fader":
+    {
+      "menu":"Master",  
+      "callback":"moveGrandMasterFader",
+      "parameters":
+      {
+        "GrandMaster": 
+        {
+          "type":"Enum", "options": 
+          {
+            "Master": "1", 
+            "World": "2", 
+            "Highlite": "3",
+            "Lowlight": "4",
+            "Solo": "5",
+            "Rate": "6",
+            "Speed": "7",
+            "ProgramTime": "8",
+            "ProgramXFade": "9",
+            "ExecutorTime": "10",
+            "ExecutorXFade": "11",
+            "ProgramSpeed": "12",
+            "Blind": "13",
+            "SoundOut": "14",
+            "SoundIn": "15",
+            "SoundFade": "16"
+          }
+        },
+        "Value": {"type": "Float", "ui":"slider", "min":0, "max":1, "default":0, "mappingIndex": 0}
+      }
+    },
+    "Move Master BPM Fader":
+    {
+      "menu":"Master",  
+      "callback":"moveGrandMasterBpmFader",
+      "parameters":
+      {
+        "GrandMaster": 
+        {
+          "type":"Enum", "options": 
+          {
+            "Speed": "7",
+            "ProgramSpeed": "12"
+          }
+        },
+        "Value": {"type": "Float", "ui":"slider", "min":0, "max":225, "default":0, "mappingIndex": 0}
+      }
+    },
+    "Move SpeedMaster Fader":
+    {
+      "menu":"Speed",  
+      "callback":"moveSpeedMasterFader",
+      "parameters":
+      {
+        "SpeedMaster": {"type": "Integer", "min":1, "max":16, "default":1, "description":"The number of the SpeedMaster"},
+        "Value": {"type": "Float", "ui":"slider", "min":0, "max":1, "default":0, "mappingIndex": 0}
+      }
+    },
+    "Move SpeedMaster BPM Fader":
+    {
+      "menu":"Speed",  
+      "callback":"moveSpeedMasterBpmFader",
+      "parameters":
+      {
+        "SpeedMaster": {"type": "Integer", "min":1, "max":16, "default":1, "description":"The number of the SpeedMaster"},
+        "Value": {"type": "Float", "ui":"slider", "min":0, "max":225, "default":0, "mappingIndex": 0}
+      }
+    },
+    "Turn Encoder":
+    {
+      "menu":"Programmer",  
+      "callback":"turnEncoder",
+      "parameters":
+      {
+        "Encoder": 
+        {
+          "type":"Enum", "options": 
+          {
+            "Dimmer": "Dimmer",
+            "Pan": "Pan",
+            "Tilt": "Tilt",
+            "Shutter1": "Shutter1",
+            "Prism1": "Prism1",
+            "Prism1Pos": "Prism1Pos",
+            "Prism2": "Prism2",
+            "Prism2Pos": "Prism2Pos",
+            "Focus1": "Focus1",
+            "Zoom": "Zoom",
+            "Gobo1": "Gobo1",
+            "Gobo1Pos": "Gobo1Pos",
+            "Gobo2": "Gobo2",
+            "Gobo2Pos": "Gobo2Pos",
+            "Frost1": "Frost1",
+            "Iris": "Iris",
+            "AnimationWheel1": "AnimationWheel1",
+            "Color1": "Color1",
+            "Color2": "Color2",
+            "ColorRGB_R": "ColorRGB_R",
+            "ColorRGB_G": "ColorRGB_G",
+            "ColorRGB_B": "ColorRGB_B",
+            "ColorRGB_C": "ColorRGB_C",
+            "ColorRGB_M": "ColorRGB_M",
+            "ColorRGB_Y": "ColorRGB_Y",
+            "ColorRGB_Amber": "ColorRGB_RY",
+            "ColorRGB_Lime": "ColorRGB_GY",
+            "ColorRGB_W": "ColorRGB_W",
+            "ColorRGB_WW": "ColorRGB_WW",
+            "ColorRGB_CW": "ColorRGB_CW",
+            "ColorRGB_UV": "ColorRGB_UV",
+            "CTO": "CTO",
+            "CTC": "CTC",
+            "CTB": "CTB",
+            "Fan1": "Fan1",
+            "Blower1": "Blower1",
+            "Haze1": "Haze1"
+          }
+        },
+        "Multiplicator": {"type": "Float", "min":-10, "max":10, "default":1, "description":"Speed of the encoder movement, only relevant for endless encoders"},
+        "Value": {"type": "Float", "ui":"slider", "min":-10, "max":10, "default":0, "mappingIndex": 0}
+      }
+    },
+    "Set Color":
+    {
+      "menu":"Programmer",  
+      "callback":"setProgrammerColor",
+      "parameters":
+      {
+        "Color": {
+          "type": "Color",
+          "default": [1,1,1,1],
+          "mappingIndex": 0
+        },
+        "Layer": 
+        {
+          "type":"Enum", "options": 
+          {
+            "Absolute": "Absolute",
+            "Relative": "Relative"
+          }
+        }
+      }
+    },
+    "Send Command":
+    {
+      "menu":"Control",  
+      "callback":"sendCommand",
+      "parameters":
+      {
+        "command": {"type":"String", "default":"clear"}
+      }
+    },
+    "Set Preview":
+    {
+      "menu":"Control",  
+      "callback":"setPreview",
+      "parameters":
+      {
+        "status": {"type":"Boolean", "default":0, "mappingIndex": 0}
+      }
+    },
+    "Set Blind":
+    {
+      "menu":"Control",  
+      "callback":"setBlind",
+      "parameters":
+      {
+        "status": {"type":"Boolean", "default":0, "mappingIndex": 0}
+      }
+    },
+    "Set Freeze":
+    {
+      "menu":"Control",  
+      "callback":"setFreeze",
+      "parameters":
+      {
+        "status": {"type":"Boolean", "default":0, "mappingIndex": 0}
+      }
+    },
+    "Show Gui":
+    {
+      "menu": "Control",
+      "callback": "showGuiElements",
+      "parameters":
+      {
+        "status": {"type":"Boolean", "default":0, "mappingIndex": 0}
+      }
+    },
+    "Switch View":
+    {
+      "menu": "Control",
+      "callback": "switchView",
+      "parameters":
+      {
+        "view": {"type": "Integer", "min":1, "max":16, "default":1}
+      }
+    },
+    "Select Page":
+    {
+      "menu": "Control",
+      "callback": "selectPage",
+      "parameters":
+      {
+        "page": {"type": "Integer", "min":1, "default":1}
+      }
+    }
+  }
+}
