@@ -21,8 +21,10 @@ Also using the Repository https://github.com/einlichtvogel/grandMA3-Feedback-Cha
 
 3. Open MA3.noisette with Chataigne and connect the Controllers in the Module Section
 
-4. Import the MA Setup into the OSC of GrandMA3
+4. Open the MA3.tosc with your TouchOSC Device and Connect to the IP of Chataigne
 
-5. Configure the GrandMA3 Feedback Plugin
+5. Import the MA Setup into the OSC of GrandMA3
 
-6. Begin your Show
+6. Configure the GrandMA3 Feedback Plugin
+
+7. Begin your Show
